@@ -22,4 +22,15 @@
 
 # pygame.draw.rect(screen, 'gray', score_rect)
 # pygame.draw.rect(screen, 'black', score_rect, 6)
+
+# Movimiento del jugador
+# keys = pygame.key.get_pressed()
+# if keys[pygame.K_SPACE]:
+#     print('jump')
+
+
+# if event.type == pygame.MOUSEBUTTONDOWN:
+#     if eren_rect.collidepoint(event.pos):
+#         player_gravity = -25
+
 """
