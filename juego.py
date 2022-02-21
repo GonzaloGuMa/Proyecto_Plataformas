@@ -19,8 +19,10 @@ def mov_enemigo(obstacle_list):
             obs_rect.x += 4
 
             if obs_rect.bottom == 474:
+                obs_rect.x += 1
                 screen.blit(rubble_size, obs_rect)
             else:
+                obs_rect.x += 5
                 screen.blit(small_titan, obs_rect)
 
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x < 1250]
@@ -28,6 +30,26 @@ def mov_enemigo(obstacle_list):
         return obstacle_list
 
     else: return []
+
+def collisions(player, obstacles):
+    if obstacles:
+        for obs_rect in obstacles:
+            if player.colliderect(obs_rect):
+                return False
+    return True
+
+def eren_animation_fun():
+    global eren_surf, eren_index
+
+    if eren_rect.bottom < 470:
+        eren_surf = eren_walk7_size
+    else:
+        eren_index += 0.1
+        if eren_index >= len(eren_walk):
+            eren_index = 0
+
+        eren_surf = eren_walk[int(eren_index)]
+
 
 # Inicia pygame
 pygame.init() # noqa
@@ -65,9 +87,37 @@ reiner_rect = reiner_size.get_rect(bottomright=(1190, 475))
 
 lista_enemigos = []
 
-player_surface = pygame.image.load('graphics/eren_running.png').convert_alpha()
-eren = pygame.transform.scale(player_surface, (75, 75))
-eren_rect = eren.get_rect(midright=(800, 475))
+# ******************** Jugador (Texturas y Animacion) **********************
+
+eren_walk1 = pygame.image.load('graphics/eren_animation/eren_run1.png').convert_alpha()
+eren_walk1_size = pygame.transform.scale(eren_walk1, (75, 75))
+
+eren_walk2 = pygame.image.load('graphics/eren_animation/eren_run2.png').convert_alpha()
+eren_walk2_size = pygame.transform.scale(eren_walk2, (75, 75))
+
+eren_walk3 = pygame.image.load('graphics/eren_animation/eren_run3.png').convert_alpha()
+eren_walk3_size = pygame.transform.scale(eren_walk3, (75, 75))
+
+eren_walk4 = pygame.image.load('graphics/eren_animation/eren_run4.png').convert_alpha()
+eren_walk4_size = pygame.transform.scale(eren_walk4, (75, 75))
+
+eren_walk5 = pygame.image.load('graphics/eren_animation/eren_run5.png').convert_alpha()
+eren_walk5_size = pygame.transform.scale(eren_walk5, (75, 75))
+
+eren_walk6 = pygame.image.load('graphics/eren_animation/eren_run6.png').convert_alpha()
+eren_walk6_size = pygame.transform.scale(eren_walk6, (75, 75))
+
+eren_walk7 = pygame.image.load('graphics/eren_animation/eren_run7.png').convert_alpha()
+eren_walk7_size = pygame.transform.scale(eren_walk7, (75, 75))
+
+eren_walk8 = pygame.image.load('graphics/eren_animation/eren_run8.png').convert_alpha()
+eren_walk8_size = pygame.transform.scale(eren_walk8, (75, 75))
+
+eren_walk = [eren_walk1_size, eren_walk2_size, eren_walk3_size, eren_walk4_size, eren_walk5_size, eren_walk6_size, eren_walk7_size, eren_walk8_size]
+eren_index = 0
+eren_surf = eren_walk[eren_index]
+
+eren_rect = eren_surf.get_rect(midright=(800, 475))
 
 player_gravity = 0
 
@@ -117,27 +167,24 @@ while True:
         if eren_rect.bottom >= 475:
             eren_rect.bottom = 475
 
-        screen.blit(eren, eren_rect)
-
-        # Movimiento de Enemigos
-        # Movimiento de los escombros
-        # rubble_rect.x += 4
-        # if rubble_rect.right >= 1300:
-        #     rubble_rect.left = 0
-        #
-        # screen.blit(rubble_size, rubble_rect)
+        eren_animation_fun()
+        screen.blit(eren_surf, eren_rect)
 
         lista_enemigos = mov_enemigo(lista_enemigos)
 
         # colisión y muerte
-        # if rubble_rect.colliderect(eren_rect):
-        #     game_active = False
+        game_active = collisions(eren_rect, lista_enemigos)
 
     else:
+
         instrucciones_background = pygame.image.load('graphics/instrucciones.jpg').convert_alpha() # noqa
         instrucciones = pygame.transform.scale(instrucciones_background, (1200, 500)) # noqa
 
         screen.blit(instrucciones, (0, 0))
+
+        lista_enemigos.clear()
+        eren_rect.midright=(800, 475)
+        player_gravity = 0
 
         puntos_ganados = test_font.render('Tu puntuación: {}'.format(puntos), False, ('Red'))
         puntos_ganados_rect = puntos_ganados.get_rect(center=(550, 250))
