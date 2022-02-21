@@ -23,7 +23,7 @@ def mov_enemigo(obstacle_list):
                 screen.blit(rubble_size, obs_rect)
             else:
                 obs_rect.x += 5
-                screen.blit(small_titan, obs_rect)
+                screen.blit(small_titan_surf, obs_rect)
 
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x < 1250]
 
@@ -51,6 +51,23 @@ def eren_animation_fun():
         eren_surf = eren_walk[int(eren_index)]
 
 
+def reiner_animation_fun():
+    global reiner_surf, reiner_index
+    reiner_index += 0.1
+    if reiner_index >= len(reiner_frames):
+        reiner_index = 0
+
+    reiner_surf = reiner_frames[int(reiner_index)]
+
+def small_titan_animation():
+    global small_titan_surf, small_titan_index
+    small_titan_index += 0.1
+    if small_titan_index >= len(small_titan):
+        small_titan_index = 0
+
+    small_titan_surf = small_titan[int(small_titan_index)]
+
+
 # Inicia pygame
 pygame.init() # noqa
 screen = pygame.display.set_mode((1200, 500))  # (width, height)
@@ -76,14 +93,86 @@ ground = pygame.transform.scale(ground_surface, (1200, 500))
 rubble_texture = pygame.image.load('graphics/rubble.png').convert_alpha()  # noqa
 rubble_size = pygame.transform.scale(rubble_texture, (90, 50))
 
+# ************** Textura y Animacion del Titan pequeño ***********************
 
-small_titan_surf = pygame.image.load('graphics/pure_titan.png').convert_alpha()
-small_titan_size = pygame.transform.scale(small_titan_surf, (100, 100))
-small_titan = pygame.transform.flip(small_titan_size, True, False)
+small_titan_surf1 = pygame.image.load('graphics/pure_titan_animation/titan_walk1.png').convert_alpha()
+small_titan_size1 = pygame.transform.scale(small_titan_surf1, (100, 100))
+small_titan1 = pygame.transform.flip(small_titan_size1, True, False)
 
-reiner_texture = pygame.image.load('graphics/reiner_2.png').convert_alpha()  # noqa
-reiner_size = pygame.transform.scale(reiner_texture, (350, 450))
-reiner_rect = reiner_size.get_rect(bottomright=(1190, 475))
+small_titan_surf2 = pygame.image.load('graphics/pure_titan_animation/titan_walk2.png').convert_alpha()
+small_titan_size2= pygame.transform.scale(small_titan_surf2, (100, 100))
+small_titan2 = pygame.transform.flip(small_titan_size2, True, False)
+
+small_titan_surf3 = pygame.image.load('graphics/pure_titan_animation/titan_walk3.png').convert_alpha()
+small_titan_size3 = pygame.transform.scale(small_titan_surf3, (100, 100))
+small_titan3 = pygame.transform.flip(small_titan_size3, True, False)
+
+small_titan_surf4 = pygame.image.load('graphics/pure_titan_animation/titan_walk4.png').convert_alpha()
+small_titan_size4 = pygame.transform.scale(small_titan_surf4, (100, 100))
+small_titan4 = pygame.transform.flip(small_titan_size4, True, False)
+
+small_titan_surf5 = pygame.image.load('graphics/pure_titan_animation/titan_walk5.png').convert_alpha()
+small_titan_size5 = pygame.transform.scale(small_titan_surf5, (100, 100))
+small_titan5 = pygame.transform.flip(small_titan_size5, True, False)
+
+small_titan_surf6 = pygame.image.load('graphics/pure_titan_animation/titan_walk6.png').convert_alpha()
+small_titan_size6 = pygame.transform.scale(small_titan_surf6, (100, 100))
+small_titan6 = pygame.transform.flip(small_titan_size6, True, False)
+
+small_titan = [small_titan1,
+                small_titan2,
+                small_titan3,
+                small_titan4,
+                small_titan5,
+                small_titan6
+              ]
+small_titan_index = 0
+small_titan_surf = small_titan[small_titan_index]
+
+
+# Reiner Animation and Surface
+
+reiner_surf1 = pygame.image.load('graphics/reiner_animation/reiner_walk1.png').convert_alpha()
+reiner_frame1 = pygame.transform.scale(reiner_surf1, (350, 450))
+
+reiner_surf2 = pygame.image.load( 'graphics/reiner_animation/reiner_walk2.png').convert_alpha()
+reiner_frame2 = pygame.transform.scale(reiner_surf2, (350, 450))
+
+reiner_surf3 = pygame.image.load( 'graphics/reiner_animation/reiner_walk3.png').convert_alpha()
+reiner_frame3 = pygame.transform.scale(reiner_surf3, (350, 450))
+
+reiner_surf4 = pygame.image.load( 'graphics/reiner_animation/reiner_walk4.png').convert_alpha()
+reiner_frame4 = pygame.transform.scale(reiner_surf4, (350, 450))
+
+reiner_surf5 = pygame.image.load( 'graphics/reiner_animation/reiner_walk5.png').convert_alpha()
+reiner_frame5 = pygame.transform.scale(reiner_surf5, (350, 450))
+
+reiner_surf6 = pygame.image.load( 'graphics/reiner_animation/reiner_walk6.png').convert_alpha()
+reiner_frame6 = pygame.transform.scale(reiner_surf6, (350, 450))
+
+reiner_surf7 = pygame.image.load( 'graphics/reiner_animation/reiner_walk7.png').convert_alpha()
+reiner_frame7 = pygame.transform.scale(reiner_surf7, (350, 450))
+
+reiner_surf8 = pygame.image.load( 'graphics/reiner_animation/reiner_walk8.png').convert_alpha()
+reiner_frame8 = pygame.transform.scale(reiner_surf8, (350, 450))
+
+reiner_surf9 = pygame.image.load( 'graphics/reiner_animation/reiner_walk9.png').convert_alpha()
+reiner_frame9 = pygame.transform.scale(reiner_surf9, (350, 450))
+
+reiner_frames = [reiner_frame1,
+                reiner_frame2,
+                reiner_frame3,
+                reiner_frame4,
+                reiner_frame5,
+                reiner_frame6,
+                reiner_frame7,
+                reiner_frame8,
+                reiner_frame9
+                ]
+
+reiner_index = 0
+reiner_surf = reiner_frames[reiner_index]
+reiner_rect = reiner_surf.get_rect(bottomright=(1190, 475))
 
 lista_enemigos = []
 
@@ -116,7 +205,6 @@ eren_walk8_size = pygame.transform.scale(eren_walk8, (75, 75))
 eren_walk = [eren_walk1_size, eren_walk2_size, eren_walk3_size, eren_walk4_size, eren_walk5_size, eren_walk6_size, eren_walk7_size, eren_walk8_size]
 eren_index = 0
 eren_surf = eren_walk[eren_index]
-
 eren_rect = eren_surf.get_rect(midright=(800, 475))
 
 player_gravity = 0
@@ -128,10 +216,13 @@ jump_sound = pygame.mixer.Sound('sounds/tatakae.mp3')
 bg_music = pygame.mixer.Sound('sounds/bg_music2.mp3')
 bg_music.set_volume(0.1)
 
-# Timer
+# ****************  Timer *******************************
 # el +1 es para evitar conflicto con los eventos
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)  # (evento a triggerear, tiempo en milisegundos)
+
+small_titan_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(small_titan_timer, 200)
 
 while True:
     # Se utiliza para cerrar el juego
@@ -151,13 +242,14 @@ while True:
                 game_active = True
                 tiempo_inicial = int(pygame.time.get_ticks() / 100)
 
-        if event.type == obstacle_timer and game_active:
-            if randint(0, 2):
-                lista_enemigos.append(rubble_size.get_rect(bottomleft=(randint(-200,-50), 474)))
 
-            else:
-                lista_enemigos.append(small_titan.get_rect(bottomleft=(randint(-200,-50), 475)))
+        if game_active:
+            if event.type == obstacle_timer:
 
+                if randint(0, 2):
+                    lista_enemigos.append(rubble_size.get_rect(bottomleft=(randint(-200,-50), 474)))
+                else:
+                    lista_enemigos.append(small_titan_surf.get_rect(bottomleft=(randint(-200,-50), 475)))
 
     if game_active:
         # blit poner una superficie en otra
@@ -167,8 +259,10 @@ while True:
 
         # ***************** Enemigos ***********************
 
-        screen.blit(reiner_size, reiner_rect)
+        reiner_animation_fun()
+        screen.blit(reiner_surf, reiner_rect)
 
+        small_titan_animation()
         # ***************** Player *************************
         player_gravity += 0.5
         eren_rect.y += player_gravity
