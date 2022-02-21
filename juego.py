@@ -121,6 +121,13 @@ eren_rect = eren_surf.get_rect(midright=(800, 475))
 
 player_gravity = 0
 
+# ******************* Sonidos **************************
+
+jump_sound = pygame.mixer.Sound('sounds/tatakae.mp3')
+
+bg_music = pygame.mixer.Sound('sounds/bg_music2.mp3')
+bg_music.set_volume(0.1)
+
 # Timer
 # el +1 es para evitar conflicto con los eventos
 obstacle_timer = pygame.USEREVENT + 1
@@ -136,6 +143,7 @@ while True:
         if game_active:
             if event.type == pygame.KEYDOWN and eren_rect.bottom >= 475:
                 if event.key == pygame.K_SPACE:
+                    jump_sound.play()
                     player_gravity = -15
 
         else:
@@ -177,6 +185,7 @@ while True:
 
     else:
 
+
         instrucciones_background = pygame.image.load('graphics/instrucciones.jpg').convert_alpha() # noqa
         instrucciones = pygame.transform.scale(instrucciones_background, (1200, 500)) # noqa
 
@@ -190,7 +199,11 @@ while True:
         puntos_ganados_rect = puntos_ganados.get_rect(center=(550, 250))
 
         if puntos != 0:
+            bg_music.stop()
+            bg_music.play()
             screen.blit(puntos_ganados, puntos_ganados_rect)
+        else:
+            bg_music.play(loops=-1)
 
     # actualiza la ventana creada con el obj screen
     pygame.display.update()
