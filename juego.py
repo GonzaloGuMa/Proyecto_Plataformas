@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# Proyecto python
+# Autores: Gonzalo Gutiérrez Mata B53279
+#          Eduardo Cubilla
 
 import pygame
 from sys import exit
