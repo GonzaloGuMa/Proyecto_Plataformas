@@ -40,6 +40,7 @@ def collisions(player, obstacles):
     if obstacles:
         for obs_rect in obstacles:
             if player.colliderect(obs_rect):
+                jump_sound.play()
                 return False
     return True
 
@@ -258,8 +259,13 @@ player_gravity = 0
 
 jump_sound = pygame.mixer.Sound('sounds/tatakae.mp3')
 
-bg_music = pygame.mixer.Sound('sounds/bg_music2.mp3')
+bg_music = pygame.mixer.Sound('sounds/bg_music.mp3')
 bg_music.set_volume(0.1)
+
+bg_music2 = pygame.mixer.Sound('sounds/bg_music2.mp3')
+bg_music2.set_volume(0.1)
+
+death_sound = pygame.mixer.Sound('sounds/yamero.mp3')
 
 # ****************  Timer *******************************
 # el +1 es para evitar conflicto con los eventos
@@ -273,6 +279,8 @@ pygame.time.set_timer(small_titan_timer, 200)
 muralla_mov = 0
 casas_mov = 0
 
+bg_music.play()
+
 while True:
     # Se utiliza para cerrar el juego
     for event in pygame.event.get():
@@ -283,8 +291,7 @@ while True:
         if game_active:
             if event.type == pygame.KEYDOWN and eren_rect.bottom >= 475:
                 if event.key == pygame.K_SPACE:
-                    jump_sound.play()
-                    player_gravity = -15
+                    player_gravity = -16
 
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -293,7 +300,6 @@ while True:
 
         if game_active:
             if event.type == obstacle_timer:
-
                 if randint(0, 2):
                     lista_enemigos.append(rubble_size.get_rect(bottomleft=(randint(-200, -50), 474)))  # noqa
                 else:
@@ -323,7 +329,6 @@ while True:
         muralla_mov += 0.5
         casas_mov += 1.25
 
-        # screen.blit(ground, (0, 80))  # screen.blit score_surface, score_rect
         puntos = mostrar_puntos()
 
         # ***************** Enemigos ***********************
@@ -347,30 +352,36 @@ while True:
         game_active = collisions(eren_rect, lista_enemigos)
 
     else:
-        instrucciones_background = pygame.image.load('graphics/'
-                                                     'instrucciones'
-                                                     '.jpg').convert_alpha()
+        if puntos != 0:
+            bg_music.stop()
+            bg_music.play()
+            pts_won = test_font.render('Tu puntuación: '
+                                       '{}'.format(puntos), False, ('Red'))
 
-        instrucciones = pygame.transform.scale(instrucciones_background, (1200,
-                                                                          500))
+            pts_won_rect = pts_won.get_rect(center=(900, 250))
 
-        screen.blit(instrucciones, (0, 0))
+            screen.fill((0, 0, 0))
+            screen.blit(pts_won, pts_won_rect)
+            tatakae = pygame.image.load('graphics/'
+                                        'space_continue'
+                                        '.png').convert_alpha()
+
+            continuar = pygame.transform.scale(tatakae, (500, 480))
+            screen.blit(continuar, (0, 0))
+
+        else:
+            bg_music.play()
+            menu_background = pygame.image.load('graphics/'
+                                                'menu_inicio'
+                                                '.png').convert_alpha()
+
+            menu = pygame.transform.scale(menu_background, (1200, 500))
+
+            screen.blit(menu, (0, 0))
 
         lista_enemigos.clear()
         eren_rect.midright = (800, 475)
         player_gravity = 0
-
-        puntos_ganados = test_font.render('Tu puntuación: '
-                                          '{}'.format(puntos), False, ('Red'))
-
-        puntos_ganados_rect = puntos_ganados.get_rect(center=(550, 250))
-
-        if puntos != 0:
-            bg_music.stop()
-            bg_music.play()
-            screen.blit(puntos_ganados, puntos_ganados_rect)
-        else:
-            bg_music.play(loops=-1)
 
     # actualiza la ventana creada con el obj screen
     pygame.display.update()
