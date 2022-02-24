@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # Proyecto python
 # Autores: Gonzalo Gutiérrez Mata B53279
-#          Eduardo Cubilla
+#          Eduardo Cubilla Barquero B92495
 
 import pygame
 from sys import exit
@@ -9,6 +9,7 @@ from random import randint
 # Se utiliza para que no genere un error al cerrar
 
 
+# Función para obtener el tiempo en milisegundos y contar la cantidad de puntos
 def mostrar_puntos():
     tiempo = int(pygame.time.get_ticks() / 100) - tiempo_inicial
     score_surface = test_font.render('Puntos: {}'.format(tiempo), False, 'Red')
@@ -25,7 +26,7 @@ def mov_enemigo(obstacle_list):
 
             if obs_rect.bottom == 474:
                 obs_rect.x += 1
-                screen.blit(rubble_size, obs_rect)
+                screen.blit(rublle_s, obs_rect)
             else:
                 obs_rect.x += 5
                 screen.blit(small_titan_surf, obs_rect)
@@ -39,15 +40,17 @@ def mov_enemigo(obstacle_list):
         return []
 
 
+# Función para detectar colisiones en una lista y reproducir sonido
 def collisions(player, obstacles):
     if obstacles:
         for obs_rect in obstacles:
             if player.colliderect(obs_rect):
-                jump_sound.play()
+                death_sound.play()
                 return False
     return True
 
 
+# Función para la animación del personaje principal
 def eren_animation_fun():
     global eren_surf, eren_index
 
@@ -61,6 +64,7 @@ def eren_animation_fun():
         eren_surf = eren_walk[int(eren_index)]
 
 
+# Función para la animcación del titán acorazado
 def reiner_animation_fun():
     global reiner_surf, reiner_index
     reiner_index += 0.1
@@ -70,6 +74,7 @@ def reiner_animation_fun():
     reiner_surf = reiner_frames[int(reiner_index)]
 
 
+# Función para la animación del obstáculo (titan pequeño)
 def small_titan_animation():
     global small_titan_surf, small_titan_index
     small_titan_index += 0.1
@@ -80,9 +85,11 @@ def small_titan_animation():
 
 
 # Inicia pygame
-pygame.init() # noqa
+pygame.init()
+# Se crea objeto screen
 screen = pygame.display.set_mode((1200, 480))  # (width, height)
-pygame.display.set_caption('PROJECT GAME')
+pygame.display.set_caption('Proyecto Python')
+# Objeto reloj que nos funciona para cauntizar el tiempo del juego
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('fonts/KAISG___.TTF', 50)
 game_active = False
@@ -97,14 +104,10 @@ city = pygame.transform.scale(city_background, (1200, 500))
 houses = pygame.image.load('graphics/background_mov'
                            '/houses.png').convert_alpha()
 
-
-# score_surface = test_font.render('Sobrevive...', True, 'Red')  # (texto, AA, color) # noqa
-# score_rect = score_surface.get_rect(center=(600, 50))
-
 # ***************** Enemigos / Obstáculos ***********************
 
-rubble_texture = pygame.image.load('graphics/rubble.png').convert_alpha()  # noqa
-rubble_size = pygame.transform.scale(rubble_texture, (90, 50))
+rubble_texture = pygame.image.load('graphics/rubble.png').convert_alpha()
+rublle_s = pygame.transform.scale(rubble_texture, (90, 50))
 
 # ************** Textura y Animacion del Titan pequeño ***********************
 
@@ -207,7 +210,7 @@ reiner_index = 0
 reiner_surf = reiner_frames[reiner_index]
 reiner_rect = reiner_surf.get_rect(bottomright=(1190, 475))
 
-lista_enemigos = []
+en_list = []
 
 # ******************** Jugador (Texturas y Animacion) **********************
 
@@ -260,7 +263,7 @@ player_gravity = 0
 
 # ******************* Sonidos **************************
 
-jump_sound = pygame.mixer.Sound('sounds/tatakae.mp3')
+death_sound = pygame.mixer.Sound('sounds/tatakae.mp3')
 
 bg_music = pygame.mixer.Sound('sounds/bg_music.mp3')
 bg_music.set_volume(0.1)
@@ -268,12 +271,10 @@ bg_music.set_volume(0.1)
 bg_music2 = pygame.mixer.Sound('sounds/bg_music2.mp3')
 bg_music2.set_volume(0.1)
 
-death_sound = pygame.mixer.Sound('sounds/yamero.mp3')
-
-# ****************  Timer *******************************
-# el +1 es para evitar conflicto con los eventos
+# ****************  Timers *******************************
+# el +1 o +2 es para evitar conflicto con los eventos
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 1500)  # tiempo en milisegundos)
+pygame.time.set_timer(obstacle_timer, 1500)  # tiempo en milisegundos
 
 small_titan_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(small_titan_timer, 200)
@@ -291,6 +292,7 @@ while True:
             pygame.quit()
             exit()
 
+        # Evento de mecánica del salto
         if game_active:
             if event.type == pygame.KEYDOWN and eren_rect.bottom >= 475:
                 if event.key == pygame.K_SPACE:
@@ -301,12 +303,14 @@ while True:
                 game_active = True
                 tiempo_inicial = int(pygame.time.get_ticks() / 100)
 
+        # Para poder alternar entre obstaculos se crea este evento que depende
+        # del numero aleatorio generado por randint
         if game_active:
             if event.type == obstacle_timer:
                 if randint(0, 2):
-                    lista_enemigos.append(rubble_size.get_rect(bottomleft=(randint(-200, -50), 474)))  # noqa
+                    en_list.append(rublle_s.get_rect(bottomleft=(randint(-200, -50), 474)))  # noqa
                 else:
-                    lista_enemigos.append(small_titan_surf.get_rect(bottomleft=(randint(-200, -50), 475)))  # noqa
+                    en_list.append(small_titan_surf.get_rect(bottomleft=(randint(-200, -50), 475)))  # noqa
 
     if game_active:
         # blit poner una superficie en otra
@@ -349,11 +353,12 @@ while True:
         eren_animation_fun()
         screen.blit(eren_surf, eren_rect)
 
-        lista_enemigos = mov_enemigo(lista_enemigos)
+        en_list = mov_enemigo(en_list)
 
         # colisión y muerte
-        game_active = collisions(eren_rect, lista_enemigos)
+        game_active = collisions(eren_rect, en_list)
 
+    # Menú Principal y después menú de continuar
     else:
         if puntos != 0:
             bg_music.stop()
@@ -382,7 +387,7 @@ while True:
 
             screen.blit(menu, (0, 0))
 
-        lista_enemigos.clear()
+        en_list.clear()
         eren_rect.midright = (800, 475)
         player_gravity = 0
 
