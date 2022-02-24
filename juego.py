@@ -383,7 +383,7 @@ while True:
                                                 'menu_inicio'
                                                 '.png').convert_alpha()
 
-            menu = pygame.transform.scale(menu_background, (1200, 500))
+            menu = pygame.transform.scale(menu_background, (1200, 490))
 
             screen.blit(menu, (0, 0))
 
